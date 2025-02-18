@@ -46,7 +46,7 @@ def insert_record():
 def data():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT id, CONCAT(name, ' --test cambio v5') AS name FROM example_table")
+    cursor.execute("SELECT id, CONCAT(name, ' --test cambio v6') AS name FROM example_table")
     result = cursor.fetchall()
     connection.close()
     return jsonify(result)
