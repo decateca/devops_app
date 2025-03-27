@@ -21,7 +21,7 @@ pipeline {
                 }
             }
         }
-        stage('Update Infrastructure') {
+        /*stage('Update Infrastructure') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentails-ptower']]){
                     // Use Terraform or AWS CLI to update the ASG's launch template
@@ -31,7 +31,7 @@ pipeline {
                     sh 'terraform apply -auto-approve tfplan'
                 }                
             }
-        }
+        }*/
         stage('Refresh Instances') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentails-ptower']]){
