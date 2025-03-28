@@ -34,14 +34,20 @@ pipeline {
         }*/
         stage('Refresh Instances') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentails-ptower']]){
-                    // Trigger an instance refresh so existing instances pick up changes
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentails-ptower']]) {
                     sh '''
-                    aws autoscaling start-instance-refresh \
-                    --auto-scaling-group-name b001-pro-search-dev-asg \
-                    --preferences '{"MinHealthyPercentage":90, "InstanceWarmup":300}'
+                    set +e
+                    aws autoscaling start-instance-refresh --auto-scaling-group-name b001-pro-search-dev-asg --preferences '{"MinHealthyPercentage":90, "InstanceWarmup":300}'
+                    RET_CODE=$?
+                    if [ $RET_CODE -eq 254 ]; then
+                        echo "Instance Refresh already in progress. Skipping new refresh trigger."
+                    elif [ $RET_CODE -ne 0 ]; then
+                        echo "Error starting Instance Refresh, exit code $RET_CODE."
+                        exit $RET_CODE
+                    fi
+                    set -e
                     '''
-                }                 
+                }
             }
         }
     }
